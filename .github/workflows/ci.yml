@@ -1,0 +1,40 @@
+name: DevWeave checks
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    env:
+      DATABASE_URL: sqlite:///./ci-test.db
+      LLM_API_KEY: ''
+      GITHUB_TOKEN: ''
+      MILVUS_URI: http://127.0.0.1:1
+      MILVUS_ENABLED: 'true'
+      AUTO_SYNC_ENABLED: 'false'
+      EMBEDDING_PROVIDER: deterministic
+      NO_PROXY: 127.0.0.1,localhost,::1
+      DEVFLOW_RUN_LIVE_LLM: '0'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r backend/requirements.txt
+      - run: python -m pytest app/tests -q
+        working-directory: backend
+  frontend:
+    runs-on: ubuntu-latest
+    env:
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npm run build
+        working-directory: frontend

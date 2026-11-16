@@ -21,6 +21,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install -r backend/requirements.txt
+      - run: python scripts/check_branding.py
       - run: python -m pytest app/tests -q
         working-directory: backend
   frontend:

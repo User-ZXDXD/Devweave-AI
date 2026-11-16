@@ -163,7 +163,7 @@ def _ensure_ragas_compatibility() -> None:
 # 与确定性硬规则不同，这里的评分会调用外部/配置模型，存在耗时、失败与随机性。
 # 指标完整性、模型配置和错误都需要保存，后续比较才知道分数是在什么条件下得到。
 class RagasCollectionsScorer:
-    """Adapter from DevFlow's model clients to the Ragas 0.4 Collections API."""
+    """Adapter from DevWeave's model clients to the Ragas 0.4 Collections API."""
 
     def __init__(self) -> None:
         _ensure_ragas_compatibility()

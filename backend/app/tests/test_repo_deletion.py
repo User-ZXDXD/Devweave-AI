@@ -42,7 +42,7 @@ def _db_session():
 @pytest.mark.asyncio
 async def test_delete_repo_removes_all_conversation_and_workflow_dependencies(monkeypatch) -> None:
     db = _db_session()
-    repo = Repository(owner="devflow", name="delete-me", full_name=f"devflow/delete-{uuid.uuid4().hex[:8]}")
+    repo = Repository(owner="devweave", name="delete-me", full_name=f"devweave/delete-{uuid.uuid4().hex[:8]}")
     db.add(repo)
     db.flush()
 

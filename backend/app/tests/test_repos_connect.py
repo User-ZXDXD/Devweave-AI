@@ -13,7 +13,7 @@ from app.schemas.repos import RepoConnectRequest
     [
         ("https://github.com/openai/codex.git", "openai", "codex", "github.com"),
         ("git@github.com:openai/codex.git", "openai", "codex", "github.com"),
-        ("ssh://git@github.example.com/platform/devflow.git", "platform", "devflow", "github.example.com"),
+        ("ssh://git@github.example.com/platform/devweave.git", "platform", "devweave", "github.example.com"),
     ],
 )
 def test_parse_git_remote_url(remote_url: str, owner: str, repo: str, host: str) -> None:

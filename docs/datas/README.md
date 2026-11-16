@@ -17,7 +17,7 @@
 
 ## 先检查解压内容
 
-进入 ZIP 解压后的 `DevFlow-AI` 根目录，也就是同时包含 `backend`、`frontend`、`scripts`、`docs` 的目录，运行：
+进入 ZIP 解压后的 `DevWeave-AI` 根目录，也就是同时包含 `backend`、`frontend`、`scripts`、`docs` 的目录，运行：
 
 ```powershell
 python scripts/prepare_eval_data.py --check
@@ -49,7 +49,7 @@ python scripts/prepare_eval_data.py --check
 
 ## 执行固定评测
 
-前端启动后打开 `http://127.0.0.1:3000/evals`，选择刚才导入的仓库和「DevFlow AI 固定知识问答基线（2026-10-23）」，再运行固定评测。也可以直接通过脚本提交并等待最终结果：
+前端启动后打开 `http://127.0.0.1:3000/evals`，选择刚才导入的仓库和「DevWeave AI 固定知识问答基线（2026-10-23）」，再运行固定评测。也可以直接通过脚本提交并等待最终结果：
 
 ```powershell
 .\backend\.venv\Scripts\python.exe scripts/prepare_eval_data.py --demo-repo --run --output .data/eval-course-result.json

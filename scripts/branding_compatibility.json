@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "rules": [
+    {
+      "paths": [
+        ".env.example",
+        "backend/app/core/config.py",
+        "docker-compose.yml"
+      ],
+      "pattern": "postgresql\\+psycopg://devflow:devflow@localhost:5432/devflow|(?:POSTGRES_(?:USER|PASSWORD|DB)(?:=|:\\s*)|\\$\\{POSTGRES_(?:USER|PASSWORD|DB):-)devflow",
+      "reason": "Existing local database and credential defaults; display-name change must not select a different database."
+    },
+    {
+      "paths": [
+        "docker-compose.yml"
+      ],
+      "pattern": "devflow_(?:postgres|etcd|minio)_data",
+      "reason": "Named data volumes; renaming would select empty volumes."
+    },
+    {
+      "paths": [
+        ".env.example",
+        "backend/app/core/config.py"
+      ],
+      "pattern": "devflow_rag_qwen1024|devflow-agent-v1",
+      "reason": "Existing vector collection and cache namespace."
+    },
+    {
+      "paths": [
+        ".gitignore"
+      ],
+      "pattern": "\\.devflow/|devflow_demo\\.db",
+      "reason": "Continue ignoring legacy local data so it is not published."
+    },
+    {
+      "paths": [
+        "scripts/demo.py"
+      ],
+      "pattern": "devflow\\.db",
+      "reason": "Reuse the existing isolated demo database."
+    },
+    {
+      "paths": [
+        "scripts/start_rag.ps1"
+      ],
+      "pattern": "devflow-local-demo\\.db",
+      "reason": "Reuse the existing RAG demo database."
+    },
+    {
+      "paths": [
+        "backend/app/**"
+      ],
+      "pattern": "devflow_(?:search_evidence|get_thread_context|read_session_events)",
+      "reason": "Published MCP tool IDs and stored event names remain compatible."
+    },
+    {
+      "paths": [
+        "backend/app/services/agents/chat_agent.py",
+        "backend/app/api/routes/chat.py"
+      ],
+      "pattern": "devflow_",
+      "reason": "Routing prefix for those existing MCP tool IDs."
+    },
+    {
+      "paths": [
+        "backend/app/services/project_indexing.py",
+        "backend/app/tests/test_project_indexing.py"
+      ],
+      "pattern": "\\.devflow(?:/index\\.yml)?",
+      "reason": "Existing user indexing configuration path."
+    },
+    {
+      "paths": [
+        "backend/app/services/worktree_manager.py",
+        "backend/app/tests/test_expansion_features.py"
+      ],
+      "pattern": "\\.devflow-pr-snapshot\\.json|devflow/pr-",
+      "reason": "Existing managed worktree markers and branch namespace."
+    },
+    {
+      "paths": [
+        "backend/app/services/rag/vector_store.py"
+      ],
+      "pattern": "devflow:",
+      "reason": "Deterministic vector UUID namespace; changing it would duplicate vector records."
+    },
+    {
+      "paths": [
+        "backend/app/services/knowledge_graph.py"
+      ],
+      "pattern": "devflow-graph:",
+      "reason": "Deterministic relation UUID namespace; preserve existing graph identities."
+    },
+    {
+      "paths": [
+        "backend/app/services/repo_sync_guard.py"
+      ],
+      "pattern": "devflow:repo-sync:",
+      "reason": "Cross-process advisory lock identity; mixed versions must share one lock."
+    },
+    {
+      "paths": [
+        ".github/workflows/ci.yml",
+        "backend/app/tests/test_workflow_live_models.py",
+        "docs/development.md"
+      ],
+      "pattern": "DEVFLOW_RUN_LIVE_LLM",
+      "reason": "Existing explicit opt-in for paid live model tests."
+    },
+    {
+      "paths": [
+        "backend/app/tests/test_concurrency_regressions.py",
+        "docs/development.md"
+      ],
+      "pattern": "DEVFLOW_TEST_POSTGRES_URL",
+      "reason": "Existing explicit opt-in for a dedicated PostgreSQL regression database."
+    },
+    {
+      "paths": [
+        "docs/datas/README.md",
+        "docs/datas/evals/rag_cases.json",
+        "docs/development.md"
+      ],
+      "pattern": "devflow-real-project-rag-baseline",
+      "reason": "Stable historical evaluation suite ID; label and questions use the current brand."
+    },
+    {
+      "paths": [
+        "scripts/prepare_eval_data.py",
+        "docs/datas/README.md"
+      ],
+      "pattern": "(?:course-demo/)?devflow-eval-course",
+      "reason": "Existing dedicated evaluation repository ID; do not mix imported source versions."
+    },
+    {
+      "paths": [
+        "scripts/seed_demo_data.py",
+        "backend/app/tests/test_branding_migration.py"
+      ],
+      "pattern": "course-demo/devflow-sample-api",
+      "reason": "Legacy lookup used only to reuse and rename the synthetic demo repository."
+    }
+  ]
+}

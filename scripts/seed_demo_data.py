@@ -7,23 +7,36 @@ from app.db.session import Base, SessionLocal, engine
 from app.services.rag.indexing import index_repository_documents
 
 
+DEMO_FULL_NAME = "course-demo/devweave-sample-api"
+LEGACY_DEMO_FULL_NAME = "course-demo/devflow-sample-api"
+
+
+def ensure_demo_repository(db):
+    """Reuse a seeded repository UUID when updating its display name."""
+    repo = db.query(Repository).filter(Repository.full_name == DEMO_FULL_NAME).one_or_none()
+    if repo is None:
+        repo = db.query(Repository).filter(Repository.full_name == LEGACY_DEMO_FULL_NAME).one_or_none()
+    if repo is None:
+        repo = Repository(owner="course-demo", name="devweave-sample-api", full_name=DEMO_FULL_NAME,
+                          description="Synthetic demo repository for DevWeave AI", default_branch="main", github_id=10001)
+        db.add(repo)
+    elif repo.full_name == LEGACY_DEMO_FULL_NAME:
+        repo.name = "devweave-sample-api"
+        repo.full_name = DEMO_FULL_NAME
+        repo.description = "Synthetic demo repository for DevWeave AI"
+        for run in db.query(WorkflowRun).filter(WorkflowRun.repo_id == repo.id):
+            if run.html_url and run.html_url.startswith("https://github.com/" + LEGACY_DEMO_FULL_NAME + "/"):
+                run.html_url = run.html_url.replace(LEGACY_DEMO_FULL_NAME, DEMO_FULL_NAME, 1)
+    db.commit()
+    db.refresh(repo)
+    return repo
+
+
 def main() -> None:
     Base.metadata.create_all(bind=engine)
     db = SessionLocal()
     try:
-        repo = db.query(Repository).filter(Repository.full_name == "course-demo/devflow-sample-api").one_or_none()
-        if repo is None:
-            repo = Repository(
-                owner="course-demo",
-                name="devflow-sample-api",
-                full_name="course-demo/devflow-sample-api",
-                description="Demo repository for DevFlow AI course",
-                default_branch="main",
-                github_id=10001,
-            )
-            db.add(repo)
-            db.commit()
-            db.refresh(repo)
+        repo = ensure_demo_repository(db)
 
         if db.query(Issue).filter(Issue.repo_id == repo.id).count() == 0:
             issues = [
@@ -56,7 +69,7 @@ def main() -> None:
                     name="backend-test",
                     status="completed",
                     conclusion="failure",
-                    html_url="https://github.com/course-demo/devflow-sample-api/actions/runs/301",
+                    html_url="https://github.com/course-demo/devweave-sample-api/actions/runs/301",
                     jobs=[
                         {
                             "id": 9001,
@@ -69,7 +82,7 @@ def main() -> None:
                     logs_text="pytest backend/app/tests/test_github_sync.py::test_sync_issues FAILED AssertionError: expected 3 issues, got 2",
                     created_at=datetime.now(timezone.utc),
                 ),
-                WorkflowRun(repo_id=repo.id, github_run_id=302, name="frontend-lint", status="completed", conclusion="success", html_url="https://github.com/course-demo/devflow-sample-api/actions/runs/302", logs_text="", created_at=datetime.now(timezone.utc))
+                WorkflowRun(repo_id=repo.id, github_run_id=302, name="frontend-lint", status="completed", conclusion="success", html_url="https://github.com/course-demo/devweave-sample-api/actions/runs/302", logs_text="", created_at=datetime.now(timezone.utc))
             ])
 
         db.flush()

@@ -86,7 +86,7 @@ def test_fixed_eval_suite_resolves_repository_sources(tmp_path: Path) -> None:
     engine = create_engine("sqlite+pysqlite:///:memory:")
     Base.metadata.create_all(engine)
     db = sessionmaker(bind=engine)()
-    repo = Repository(owner="DemoOrg", name="DevFlow-AI", full_name="DemoOrg/DevFlow-AI")
+    repo = Repository(owner="DemoOrg", name="DevWeave-AI", full_name="DemoOrg/DevWeave-AI")
     db.add(repo)
     db.flush()
     source_id = __import__("uuid").uuid4()
@@ -108,7 +108,7 @@ def test_fixed_eval_suite_resolves_repository_sources(tmp_path: Path) -> None:
                 "schema_version": 2,
                 "name": "fixed-baseline",
                 "label": "固定基线",
-                "repository_names": ["DevFlow-AI"],
+                "repository_names": ["DevWeave-AI"],
                 "recommended": True,
                 "cases": [
                     {
